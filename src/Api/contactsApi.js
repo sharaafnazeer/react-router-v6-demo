@@ -15,3 +15,7 @@ export const saveContactApi = async (data) => {
 export const deleteContactApi = async (id) => {
     return await API.delete(`/contacts/${id}`);
 }
+
+export const updateContactApi = async (contact) => {
+    return await API.put(`/contacts/${contact.id}`, contact);
+}

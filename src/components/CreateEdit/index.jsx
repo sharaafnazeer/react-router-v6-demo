@@ -1,12 +1,13 @@
 import {Button, Card, CardContent, TextField, Box,} from "@mui/material";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {saveContactApi} from "../../Api/contactsApi";
-import {getContactsAllLoader} from "../Root";
+import {useDispatch} from "react-redux";
+import {saveContact} from "../../store/contactSlice";
 
 const CreateEdit = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -16,9 +17,10 @@ const CreateEdit = () => {
     });
 
     const onSave = () => {
-        saveContactApi(formData).then((res) => {
-            getContactsAllLoader().then(r => navigate('/'))
-        }).catch((err) => console.log(err));
+        dispatch(saveContact(formData))
+            .unwrap()
+            .then(() => navigate('/'))
+            .catch((err) => console.log(err));
     }
     const onChange = (fieldId, value) => {
         const newFormData = {...formData, [fieldId]: value};

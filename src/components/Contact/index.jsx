@@ -1,35 +1,33 @@
 import {Box, Button, Card, CardActions, CardContent, CardMedia, CircularProgress, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {deleteContactApi, getContactByIdApi} from "../../Api/contactsApi";
-import {getContactsAllLoader} from "../Root";
+import {useDispatch, useSelector} from "react-redux";
+import {deleteContactById, getContactById} from "../../store/contactSlice";
 
 const Contact = () => {
 
     const params = useParams();
     const navigate = useNavigate();
-    const [contact, setContacts] = useState(null);
     const [isLoading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+    const contact = useSelector((state) => state.contact.selectedContact);
 
     useEffect(() => {
         setLoading(true);
-        getContactByIdApi(params.id).then((res) => {
-            setContacts(res?.data || null);
-            setLoading(false);
+        dispatch(getContactById(params.id))
+            .unwrap()
+            .then(() => setLoading(false))
+            .catch(() => setLoading(false))
 
-        }).catch(() => {
-            navigate('/');
-            setLoading(false);
-        })
     }, [params.id]); // when params.id is getting changed, the useEffect will fire-up
 
     const onDelete = () => {
-        deleteContactApi(params.id)
+        dispatch(deleteContactById(params.id))
+            .unwrap()
             .then(() => {
-                getContactsAllLoader().then(() => navigate('/'))
-            }).catch(err => {
-            console.log(err);
-        });
+                navigate('/');
+            })
+            .catch(() => setLoading(false))
     }
 
     return (

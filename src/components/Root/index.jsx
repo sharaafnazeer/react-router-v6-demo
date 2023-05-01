@@ -9,21 +9,16 @@ import {
     ListItemText,
     TextField
 } from "@mui/material";
-import {Outlet, useLoaderData, useNavigate} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import {getAllContactsApi} from "../../Api/contactsApi";
-
-
-export async function getContactsAllLoader() {
-    const response = await getAllContactsApi();
-    console.log("trigger", response.data);
-    return {contacts: response.data, otherData: []};
-}
+import {useDispatch, useSelector} from "react-redux";
+import {getAllContacts} from "../../store/contactSlice";
 
 const Root = () => {
 
     const navigate = useNavigate();
-    const {contacts} = useLoaderData();
+    const contacts = useSelector((state) => state.contact.contacts);
+    const dispatch = useDispatch();
 
     const onItemClick = (id = null) => {
         if (id) {
@@ -33,8 +28,8 @@ const Root = () => {
     }
 
     useEffect(() => {
-        // console.log(contacts);
-    });
+        dispatch(getAllContacts())
+    }, [dispatch]);
 
     return (
 
@@ -57,6 +52,21 @@ const Root = () => {
                             <Button onClick={() => onItemClick()} variant="contained">New</Button>
                         </Grid>
                     </Grid>
+                    {/*<Grid container spacing={2}>*/}
+                    {/*    <Grid item>*/}
+                    {/*        <Button onClick={() => onBtnClick('decrement')} variant="contained">Decrement</Button>*/}
+                    {/*    </Grid>*/}
+                    {/*    <Grid item>*/}
+                    {/*        <Button onClick={() => onBtnClick('increment')} variant="contained">Increment</Button>*/}
+                    {/*    </Grid>*/}
+                    {/*    <Grid item>*/}
+                    {/*        <Button onClick={() => onBtnClick('increment-100')} variant="contained">Increment by*/}
+                    {/*            100</Button>*/}
+                    {/*    </Grid>*/}
+                    {/*    <Grid item>*/}
+                    {/*        <Typography varient="h4">{value}</Typography>*/}
+                    {/*    </Grid>*/}
+                    {/*</Grid>*/}
                     <Divider/>
                     <List>
                         {
