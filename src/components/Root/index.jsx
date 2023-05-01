@@ -9,19 +9,21 @@ import {
     ListItemText,
     TextField
 } from "@mui/material";
-import {Folder} from "@mui/icons-material";
-import {Outlet, useNavigate} from "react-router-dom";
-import {contactArray} from "../Util/helper";
-import {useEffect, useState} from "react";
+import {Outlet, useLoaderData, useNavigate} from "react-router-dom";
+import {useEffect} from "react";
+import {getAllContactsApi} from "../../Api/contactsApi";
 
-const Root = (effect, deps) => {
+
+export async function getContactsAllLoader() {
+    const response = await getAllContactsApi();
+    console.log("trigger", response.data);
+    return {contacts: response.data, otherData: []};
+}
+
+const Root = () => {
 
     const navigate = useNavigate();
-    const [contacts, setContacts] = useState(contactArray);
-
-    useEffect(() => {
-        setContacts(contactArray);
-    }, [contactArray])
+    const {contacts} = useLoaderData();
 
     const onItemClick = (id = null) => {
         if (id) {
@@ -29,6 +31,10 @@ const Root = (effect, deps) => {
         } else
             navigate(`contacts/create`);
     }
+
+    useEffect(() => {
+        // console.log(contacts);
+    });
 
     return (
 
@@ -57,9 +63,7 @@ const Root = (effect, deps) => {
                             contacts.map((contact) => (
                                 <ListItem key={contact.id} onClick={() => onItemClick(contact.id)}>
                                     <ListItemAvatar>
-                                        <Avatar>
-                                            <Folder/>
-                                        </Avatar>
+                                        <Avatar src={contact.avatar}/>
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={contact.firstName + ' ' + contact.lastName}

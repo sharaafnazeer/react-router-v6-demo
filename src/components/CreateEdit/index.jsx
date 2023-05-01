@@ -1,25 +1,24 @@
 import {Button, Card, CardContent, TextField, Box,} from "@mui/material";
 import {useState} from "react";
-import {addContact, contactArray} from "../Util/helper";
 import {useNavigate} from "react-router-dom";
+import {saveContactApi} from "../../Api/contactsApi";
+import {getContactsAllLoader} from "../Root";
+
 const CreateEdit = () => {
 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
-        phoneNumber: '',
+        contactNumber: '',
+        avatar: '',
         description: '',
     });
 
     const onSave = () => {
-        const newId = parseInt(contactArray.reverse()[0].id) + 1
-        const newData = {
-            ...formData,
-            id: newId,
-        }
-        addContact(newData);
-        navigate(-1);
+        saveContactApi(formData).then((res) => {
+            getContactsAllLoader().then(r => navigate('/'))
+        }).catch((err) => console.log(err));
     }
     const onChange = (fieldId, value) => {
         const newFormData = {...formData, [fieldId]: value};
@@ -56,8 +55,16 @@ const CreateEdit = () => {
                     </div>
                     <div>
                         <TextField
-                            id="phoneNumber"
+                            id="contactNumber"
                             label="Phone Number"
+                            variant="outlined"
+                            onBlur={(event) => onChange(event.target.id, event.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <TextField
+                            id="avatar"
+                            label="Image Url"
                             variant="outlined"
                             onBlur={(event) => onChange(event.target.id, event.target.value)}
                         />
